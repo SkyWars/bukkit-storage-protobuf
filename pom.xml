@@ -62,8 +62,9 @@
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
+            <artifactId>protobuf-java-lite</artifactId>
             <version>2.5.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

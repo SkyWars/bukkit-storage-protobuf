@@ -1,0 +1,34 @@
+package net.daboross.bukkitdev.bukkitstorageprotobuf.compiled;
+
+option optimize_for = LITE_RUNTIME;
+
+message InventoryItem {
+    required uint32 location = 1; // the location in the inventory
+    required uint32 id = 2; // the item id
+    optional uint32 amount = 3; // the item amount
+    optional uint32 data = 4; // the item data
+    // TODO: item name, durability, enchantments
+}
+
+message BlockInventory {
+    repeated InventoryItem item = 1; // the list of items in this inventory
+    required uint32 length = 2; // the total length of the inventory
+}
+
+message Block {
+    required uint32 id = 1; // the block id
+    optional uint32 data = 2; // the block data
+    optional BlockInventory inventory = 3; // the inventory in this block, only for chests, dispensers, or other blocks with an inventory.
+}
+
+message BlockRow {
+    repeated Block block = 1; // this is varying along the Z axis, Z=0 to Z=z_length
+}
+
+message BlockPlain {
+    repeated BlockRow row = 1; // this is varying along the X axis, X=0 to X=x_length
+}
+
+message BlockArea {
+    repeated BlockPlain plain = 1; // this is varying along the Y axis, Y=0 to Y=y_length
+}
