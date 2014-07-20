@@ -71,6 +71,13 @@ public class ProtobufStorage {
                             //noinspection deprecation
                             block.setTypeId(storedBlock.getId(), false);
                         }
+                        if (storedBlock.hasInventory()) {
+                            BlockState state = block.getState();
+                            if (state instanceof InventoryHolder) {
+                                ((InventoryHolder) state).getInventory().setContents(decodeInventory(storedBlock.getInventory()));
+                            }
+                            // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
+                        }
                     }
                 }
             }
