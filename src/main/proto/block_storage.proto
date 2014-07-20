@@ -2,12 +2,19 @@ package net.daboross.bukkitdev.bukkitstorageprotobuf.compiled;
 
 option optimize_for = LITE_RUNTIME;
 
+message ItemEnchantment {
+    required uint32 id = 1;
+    required uint32 level = 2;
+}
+
 message InventoryItem {
     required uint32 location = 1; // the location in the inventory
     required uint32 id = 2; // the item id
     optional uint32 amount = 3; // the item amount
     optional uint32 data = 4; // the item data
-    // TODO: item name, durability, enchantments
+    optional string name = 5; // the item name
+    optional uint32 durability = 6; // the item durability
+    repeated ItemEnchantment enchantment = 7; // the item's enchantments
 }
 
 message BlockInventory {

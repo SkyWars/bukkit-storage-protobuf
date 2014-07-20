@@ -20,6 +20,7 @@ import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -96,11 +97,8 @@ public class ProtobufStorage {
             BlockStorage.InventoryItem.Builder itemBuilder =
                     BlockStorage.InventoryItem.newBuilder()
                             .setId(stack.getTypeId())
-                            .setLocation(i);
-            int amount = stack.getAmount();
-            if (amount != 1) {
-                itemBuilder.setAmount(amount);
-            }
+                            .setLocation(i)
+                            .setAmount(stack.getAmount());
             byte data = stack.getData().getData();
             if (data != 0) {
                 itemBuilder.setData(data);
