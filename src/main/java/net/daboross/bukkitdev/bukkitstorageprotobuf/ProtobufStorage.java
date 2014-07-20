@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ProtobufStorage {
 
-    public BlockStorage.BlockArea encode(World world, int zeroX, int zeroY, int zeroZ, int xLength, int yLength, int zLength, boolean saveBlockInventories) {
+    public static BlockStorage.BlockArea encode(World world, int zeroX, int zeroY, int zeroZ, int xLength, int yLength, int zLength, boolean saveBlockInventories) {
         BlockStorage.BlockArea.Builder areaBuilder = BlockStorage.BlockArea.newBuilder();
         for (int y = 0; y < yLength; y++) {
             BlockStorage.BlockPlain.Builder plainBuilder = BlockStorage.BlockPlain.newBuilder();
@@ -55,7 +55,7 @@ public class ProtobufStorage {
         return areaBuilder.build();
     }
 
-    public void apply(BlockStorage.BlockArea storedArea, World world, int zeroX, int zeroY, int zeroZ) {
+    public static void apply(BlockStorage.BlockArea storedArea, World world, int zeroX, int zeroY, int zeroZ) {
         for (int y = 0; y < storedArea.getPlainCount(); y++) {
             BlockStorage.BlockPlain storedPlain = storedArea.getPlain(y);
             for (int x = 0; x < storedPlain.getRowCount(); x++) {
@@ -84,14 +84,13 @@ public class ProtobufStorage {
         }
     }
 
-    public BlockStorage.BlockInventory encodeInventory(ItemStack[] contents) {
+    public static BlockStorage.BlockInventory encodeInventory(ItemStack[] contents) {
         BlockStorage.BlockInventory.Builder inventoryBuilder = BlockStorage.BlockInventory.newBuilder();
         inventoryBuilder.setLength(contents.length);
 
         for (int i = 0; i < contents.length; i++) {
             ItemStack stack = contents[i];
             if (stack == null) {
-                System.out.println("Stack was null in contents!");
                 continue;
             }
             BlockStorage.InventoryItem.Builder itemBuilder =
@@ -111,7 +110,7 @@ public class ProtobufStorage {
         return inventoryBuilder.build();
     }
 
-    public ItemStack[] decodeInventory(BlockStorage.BlockInventory storedInventory) {
+    public static ItemStack[] decodeInventory(BlockStorage.BlockInventory storedInventory) {
         ItemStack[] result = new ItemStack[storedInventory.getLength()];
 
         for (BlockStorage.InventoryItem storedItem : storedInventory.getItemList()) {
