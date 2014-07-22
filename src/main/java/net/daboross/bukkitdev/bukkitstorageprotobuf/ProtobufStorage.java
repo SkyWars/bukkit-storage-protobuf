@@ -20,7 +20,6 @@ import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -54,35 +53,6 @@ public class ProtobufStorage {
             areaBuilder.addPlain(plainBuilder);
         }
         return areaBuilder.build();
-    }
-
-    public static void apply(BlockStorage.BlockArea storedArea, World world, int zeroX, int zeroY, int zeroZ) {
-        for (int y = 0; y < storedArea.getPlainCount(); y++) {
-            BlockStorage.BlockPlain storedPlain = storedArea.getPlain(y);
-            for (int x = 0; x < storedPlain.getRowCount(); x++) {
-                BlockStorage.BlockRow storedRow = storedPlain.getRow(x);
-                for (int z = 0; z < storedRow.getBlockCount(); z++) {
-                    BlockStorage.Block storedBlock = storedRow.getBlock(z);
-                    if (storedBlock.getId() != 0) {
-                        Block block = world.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
-                        if (storedBlock.hasData()) {
-                            //noinspection deprecation
-                            block.setTypeIdAndData(storedBlock.getId(), (byte) storedBlock.getData(), false);
-                        } else {
-                            //noinspection deprecation
-                            block.setTypeId(storedBlock.getId(), false);
-                        }
-                        if (storedBlock.hasInventory()) {
-                            BlockState state = block.getState();
-                            if (state instanceof InventoryHolder) {
-                                ((InventoryHolder) state).getInventory().setContents(decodeInventory(storedBlock.getInventory()));
-                            }
-                            // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public static BlockStorage.BlockInventory encodeInventory(ItemStack[] contents) {
