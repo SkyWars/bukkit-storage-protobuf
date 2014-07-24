@@ -84,11 +84,11 @@ public class MemoryBlockArea {
     public void applyWorldEdit(World bukkitWorld, LocalWorld editWorld, int zeroX, int zeroY, int zeroZ) {
         Vector positionVector = new Vector();
         for (int y = 0; y < lengthY; y++) {
-            positionVector.setY(y);
+            positionVector.setY(zeroY + y);
             for (int x = 0; x < lengthX; x++) {
-                positionVector.setX(x);
+                positionVector.setX(zeroX + x);
                 for (int z = 0; z < lengthZ; z++) {
-                    positionVector.setZ(z);
+                    positionVector.setZ(zeroZ + z);
                     BlockStorage.Block storedBlock = blocks[y][x][z];
                     if (storedBlock.getId() != 0) {
                         if (storedBlock.hasData()) {
