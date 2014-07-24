@@ -16,12 +16,15 @@
  */
 package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
+import java.util.Map;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class ProtobufStorage {
 
@@ -64,14 +67,40 @@ public class ProtobufStorage {
             if (stack == null) {
                 continue;
             }
-            BlockStorage.InventoryItem.Builder itemBuilder =
-                    BlockStorage.InventoryItem.newBuilder()
-                            .setId(stack.getTypeId())
-                            .setLocation(i)
-                            .setAmount(stack.getAmount());
+            BlockStorage.InventoryItem.Builder itemBuilder = BlockStorage.InventoryItem.newBuilder();
+            // id and location
+            itemBuilder.setId(stack.getTypeId()).setLocation(i);
+            // amount
+            itemBuilder.setAmount(stack.getAmount());
+            // data
             byte data = stack.getData().getData();
             if (data != 0) {
                 itemBuilder.setData(data);
+            }
+            // durability
+            int durability = stack.getDurability();
+            if (durability > 0) {
+                itemBuilder.setDurability(durability);
+            }
+            // Item meta
+            ItemMeta meta = stack.getItemMeta();
+            // Item name
+            String name = meta.getDisplayName();
+            if (name != null) {
+                itemBuilder.setName(name);
+            }
+            // Lore
+            if (meta.hasLore()) {
+                itemBuilder.addAllLore(meta.getLore());
+            }
+            // Enchantments
+            if (meta.hasEnchants()) {
+                Map<Enchantment, Integer> enchantmentMap = meta.getEnchants();
+                for (Map.Entry<Enchantment, Integer> entry : enchantmentMap.entrySet()) {
+                    itemBuilder.addEnchantment(BlockStorage.ItemEnchantment.newBuilder()
+                            .setId(entry.getKey().getId())
+                            .setLevel(entry.getValue()));
+                }
             }
             inventoryBuilder.addItem(itemBuilder);
         }
@@ -88,6 +117,23 @@ public class ProtobufStorage {
             }
             if (storedItem.hasData()) {
                 itemStack.getData().setData((byte) storedItem.getData());
+            }
+            if (storedItem.hasDurability()) {
+                itemStack.setDurability((short) storedItem.getDurability());
+            }
+            boolean hasName = storedItem.hasName();
+            boolean hasEnchants = storedItem.getEnchantmentCount() > 0;
+            if (hasName || hasEnchants) {
+                ItemMeta meta = itemStack.getItemMeta();
+                if (hasName) {
+                    meta.setDisplayName(storedItem.getName());
+                }
+                if (hasEnchants) {
+                    for (BlockStorage.ItemEnchantment storedEnchant : storedItem.getEnchantmentList()) {
+                        meta.addEnchant(Enchantment.getById(storedEnchant.getId()), storedEnchant.getLevel(), true);
+                    }
+                }
+                itemStack.setItemMeta(meta);
             }
             result[storedItem.getLocation()] = itemStack;
         }

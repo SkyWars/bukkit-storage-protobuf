@@ -12,8 +12,9 @@ message InventoryItem {
     required uint32 id = 2; // the item id
     optional uint32 amount = 3; // the item amount
     optional uint32 data = 4; // the item data
-    optional string name = 5; // the item name
     optional uint32 durability = 6; // the item durability
+    optional string name = 5; // the item name
+    repeated string lore = 8; // the item lore
     repeated ItemEnchantment enchantment = 7; // the item's enchantments
 }
 
