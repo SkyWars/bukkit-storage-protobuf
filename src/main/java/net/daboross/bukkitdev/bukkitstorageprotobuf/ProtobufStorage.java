@@ -122,11 +122,15 @@ public class ProtobufStorage {
                 itemStack.setDurability((short) storedItem.getDurability());
             }
             boolean hasName = storedItem.hasName();
+            boolean hasLore = storedItem.getLoreCount() > 0;
             boolean hasEnchants = storedItem.getEnchantmentCount() > 0;
-            if (hasName || hasEnchants) {
+            if (hasName || hasLore || hasEnchants) {
                 ItemMeta meta = itemStack.getItemMeta();
                 if (hasName) {
                     meta.setDisplayName(storedItem.getName());
+                }
+                if (hasLore) {
+                    meta.setLore(storedItem.getLoreList());
                 }
                 if (hasEnchants) {
                     for (BlockStorage.ItemEnchantment storedEnchant : storedItem.getEnchantmentList()) {
