@@ -82,15 +82,12 @@ public class MemoryBlockArea {
     }
 
     public void applyWorldEdit(World bukkitWorld, LocalWorld editWorld, int zeroX, int zeroY, int zeroZ) {
-        Vector position = new Vector();
         for (int y = 0; y < lengthY; y++) {
-            position = position.setY(zeroY + y);
             for (int x = 0; x < lengthX; x++) {
-                position = position.setX(zeroX + x);
                 for (int z = 0; z < lengthZ; z++) {
-                    position = position.setZ(zeroZ + z);
                     BlockStorage.Block storedBlock = blocks[y][x][z];
                     if (storedBlock.getId() != 0) {
+                        Vector position = new Vector(zeroX + x, zeroY + y, zeroZ + z);
                         if (storedBlock.hasData()) {
                             //noinspection deprecation
                             editWorld.setTypeIdAndDataFast(position, storedBlock.getId(), (byte) storedBlock.getData());
