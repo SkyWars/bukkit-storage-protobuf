@@ -42,6 +42,11 @@
         </developer>
     </developers>
 
+    <scm>
+        <url>https://github.com/daboross/bukkit-storage-protobuf.git</url>
+        <connection>scm:git:https://github.com/daboross/bukkit-storage-protobuf.git</connection>
+        <developerConnection>scm:git:git@github.com:daboross/bukkit-storage-protobuf.git</developerConnection>
+    </scm>
     <properties>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
