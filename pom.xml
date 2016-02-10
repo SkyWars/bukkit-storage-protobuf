@@ -49,6 +49,14 @@
 
     <repositories>
         <repository>
+            <id>repo-daboross-net</id>
+            <url>http://repo.daboross.net/</url>
+        </repository>
+        <repository>
+            <id>repo-daboross-net-backup-thirdparty-releases</id>
+            <url>http://repo.daboross.net/thirdparty-releases/</url>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -65,9 +73,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>5.6.3</version>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

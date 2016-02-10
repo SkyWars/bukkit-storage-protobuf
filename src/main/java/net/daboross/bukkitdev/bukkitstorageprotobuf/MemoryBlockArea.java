@@ -89,11 +89,9 @@ public class MemoryBlockArea {
                     if (storedBlock.getId() != 0) {
                         Vector position = new Vector(zeroX + x, zeroY + y, zeroZ + z);
                         if (storedBlock.hasData()) {
-                            //noinspection deprecation
-                            editWorld.setTypeIdAndDataFast(position, storedBlock.getId(), (byte) storedBlock.getData());
+                            editWorld.setTypeIdAndData(position, storedBlock.getId(), (byte) storedBlock.getData());
                         } else {
-                            //noinspection deprecation
-                            editWorld.setBlockTypeFast(position, storedBlock.getId());
+                            editWorld.setBlockType(position, storedBlock.getId());
                         }
                         if (storedBlock.hasInventory()) {
                             Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
