@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
 import java.util.Map;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
+import org.bukkit.Color;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -106,6 +107,24 @@ public class ProtobufStorage {
                             .setLevel(entry.getValue()));
                 }
             }
+            // Potions
+            if (meta instanceof PotionMeta) {
+                PotionMeta potionMeta = (PotionMeta) meta;
+                if (potionMeta.hasCustomEffects()) {
+                    for (PotionEffect effect : potionMeta.getCustomEffects()) {
+                        itemBuilder.addExtraPotionEffects(BlockStorage.ExtraPotionEffect.newBuilder()
+                                .setId(effect.getType().getId())
+                                .setDuration(effect.getDuration())
+                                .setAmplifier(effect.getAmplifier())
+                                .setAmbient(effect.isAmbient())
+                                .setParticles(effect.hasParticles()));
+                    }
+                }
+            }
+            // Leather armor
+            if (meta instanceof LeatherArmorMeta) {
+                itemBuilder.setLeatherArmorColorRbg(((LeatherArmorMeta) meta).getColor().asRGB());
+            }
             inventoryBuilder.addItem(itemBuilder);
         }
         return inventoryBuilder.build();
@@ -128,7 +147,9 @@ public class ProtobufStorage {
             boolean hasName = storedItem.hasName();
             boolean hasLore = storedItem.getLoreCount() > 0;
             boolean hasEnchants = storedItem.getEnchantmentCount() > 0;
-            if (hasName || hasLore || hasEnchants) {
+            boolean hasArmorColor = storedItem.hasLeatherArmorColorRbg();
+            boolean hasExtraPotionEffects = storedItem.getExtraPotionEffectsCount() > 0;
+            if (hasName || hasLore || hasEnchants | hasArmorColor | hasExtraPotionEffects) {
                 ItemMeta meta = itemStack.getItemMeta();
                 if (hasName) {
                     meta.setDisplayName(storedItem.getName());
@@ -140,6 +161,17 @@ public class ProtobufStorage {
                     for (BlockStorage.ItemEnchantment storedEnchant : storedItem.getEnchantmentList()) {
                         meta.addEnchant(Enchantment.getById(storedEnchant.getId()), storedEnchant.getLevel(), true);
                     }
+                }
+                if (hasExtraPotionEffects && meta instanceof PotionMeta) {
+                    for (BlockStorage.ExtraPotionEffect effect : storedItem.getExtraPotionEffectsList()) {
+                        ((PotionMeta) meta).addCustomEffect(new PotionEffect(PotionEffectType.getById(effect.getId()),
+                                        effect.getDuration(), effect.getAmplifier(),
+                                        effect.getAmbient(), effect.getParticles()),
+                                true);
+                    }
+                }
+                if (hasArmorColor && meta instanceof LeatherArmorMeta) {
+                    ((LeatherArmorMeta) meta).setColor(Color.fromRGB(storedItem.getLeatherArmorColorRbg()));
                 }
                 itemStack.setItemMeta(meta);
             }

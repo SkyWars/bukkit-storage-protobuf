@@ -7,6 +7,14 @@ message ItemEnchantment {
     required uint32 level = 2;
 }
 
+message ExtraPotionEffect {
+    required uint32 id = 1;
+    required int32 duration = 2;
+    required sint32 amplifier = 3;
+    required bool ambient = 4;
+    required bool particles = 5;
+}
+
 message InventoryItem {
     required uint32 location = 1; // the location in the inventory
     required uint32 id = 2; // the item id
@@ -16,6 +24,8 @@ message InventoryItem {
     optional string name = 5; // the item name
     repeated string lore = 8; // the item lore
     repeated ItemEnchantment enchantment = 7; // the item's enchantments
+    repeated ExtraPotionEffect extraPotionEffects = 9;
+    optional uint32 leatherArmorColorRbg = 10;
 }
 
 message BlockInventory {
