@@ -25,13 +25,17 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class ProtobufStorage {
 
     public static BlockStorage.BlockArea encode(World world, int zeroX, int zeroY, int zeroZ, int xLength, int yLength, int zLength, boolean saveBlockInventories) {
         BlockStorage.BlockArea.Builder areaBuilder = BlockStorage.BlockArea.newBuilder();
         for (int y = 0; y < yLength; y++) {
-            BlockStorage.BlockPlain.Builder plainBuilder = BlockStorage.BlockPlain.newBuilder();
+            BlockStorage.BlockPlane.Builder planeBuilder = BlockStorage.BlockPlane.newBuilder();
             for (int x = 0; x < xLength; x++) {
                 BlockStorage.BlockRow.Builder rowBuilder = BlockStorage.BlockRow.newBuilder();
                 for (int z = 0; z < zLength; z++) {
@@ -51,9 +55,9 @@ public class ProtobufStorage {
                     }
                     rowBuilder.addBlock(blockBuilder);
                 }
-                plainBuilder.addRow(rowBuilder);
+                planeBuilder.addRow(rowBuilder);
             }
-            areaBuilder.addPlain(plainBuilder);
+            areaBuilder.addPlane(planeBuilder);
         }
         return areaBuilder.build();
     }

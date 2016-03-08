@@ -33,17 +33,17 @@ public class MemoryBlockArea {
     public final BlockStorage.Block[][][] blocks;
 
     public MemoryBlockArea(BlockStorage.BlockArea area) throws InvalidBlockAreaException {
-        this.lengthY = area.getPlainCount();
-        this.lengthX = area.getPlain(0).getRowCount();
-        this.lengthZ = area.getPlain(0).getRow(0).getBlockCount();
+        this.lengthY = area.getPlaneCount();
+        this.lengthX = area.getPlane(0).getRowCount();
+        this.lengthZ = area.getPlane(0).getRow(0).getBlockCount();
         blocks = new BlockStorage.Block[lengthY][lengthX][lengthZ];
-        for (int y = 0; y < area.getPlainCount(); y++) {
-            BlockStorage.BlockPlain storedPlain = area.getPlain(y);
-            if (storedPlain.getRowCount() != this.lengthX) {
+        for (int y = 0; y < area.getPlaneCount(); y++) {
+            BlockStorage.BlockPlane storedPlane = area.getPlane(y);
+            if (storedPlane.getRowCount() != this.lengthX) {
                 throw new InvalidBlockAreaException("Inconsistent x length");
             }
-            for (int x = 0; x < storedPlain.getRowCount(); x++) {
-                BlockStorage.BlockRow storedRow = storedPlain.getRow(x);
+            for (int x = 0; x < storedPlane.getRowCount(); x++) {
+                BlockStorage.BlockRow storedRow = storedPlane.getRow(x);
                 if (storedRow.getBlockCount() != this.lengthZ) {
                     throw new InvalidBlockAreaException("Inconsistent z length");
                 }

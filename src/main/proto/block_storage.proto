@@ -33,10 +33,10 @@ message BlockRow {
     repeated Block block = 1; // this is varying along the Z axis, Z=0 to Z=z_length
 }
 
-message BlockPlain {
+message BlockPlane {
     repeated BlockRow row = 1; // this is varying along the X axis, X=0 to X=x_length
 }
 
 message BlockArea {
-    repeated BlockPlain plain = 1; // this is varying along the Y axis, Y=0 to Y=y_length
+    repeated BlockPlane plane = 1; // this is varying along the Y axis, Y=0 to Y=y_length
 }
