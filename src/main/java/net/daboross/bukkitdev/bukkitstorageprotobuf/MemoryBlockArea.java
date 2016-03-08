@@ -16,8 +16,8 @@
  */
 package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
-import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.world.AbstractWorld;
 import java.io.IOException;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.bukkit.World;
@@ -30,6 +30,7 @@ public class MemoryBlockArea {
     public final int lengthX;
     public final int lengthY;
     public final int lengthZ;
+    /** Blocks [y][x][z] */
     public final BlockStorage.Block[][][] blocks;
 
     public MemoryBlockArea(BlockStorage.BlockArea area) throws InvalidBlockAreaException {
@@ -81,7 +82,7 @@ public class MemoryBlockArea {
         }
     }
 
-    public void applyWorldEdit(World bukkitWorld, LocalWorld editWorld, int zeroX, int zeroY, int zeroZ) {
+    public void applyWorldEdit(World bukkitWorld, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ) {
         for (int y = 0; y < lengthY; y++) {
             for (int x = 0; x < lengthX; x++) {
                 for (int z = 0; z < lengthZ; z++) {
