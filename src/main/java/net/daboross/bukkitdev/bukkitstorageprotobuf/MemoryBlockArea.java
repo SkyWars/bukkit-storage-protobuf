@@ -24,6 +24,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 public class MemoryBlockArea {
 
@@ -55,7 +56,7 @@ public class MemoryBlockArea {
         }
     }
 
-    public void apply(World world, int zeroX, int zeroY, int zeroZ) {
+    public void apply(World world, int zeroX, int zeroY, int zeroZ, ChestProvider provider) {
         for (int y = 0; y < lengthY; y++) {
             for (int x = 0; x < lengthX; x++) {
                 for (int z = 0; z < lengthZ; z++) {
@@ -72,7 +73,14 @@ public class MemoryBlockArea {
                         if (storedBlock.hasInventory()) {
                             BlockState state = block.getState();
                             if (state instanceof InventoryHolder) {
-                                ((InventoryHolder) state).getInventory().setContents(ProtobufStorage.decodeInventory(storedBlock.getInventory()));
+                                ItemStack[] items = null;
+                                if (provider != null) {
+                                    items = provider.getInventory(((InventoryHolder) state).getInventory().getSize(), x, y, z);
+                                }
+                                if (items == null) {
+                                    items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
+                                }
+                                ((InventoryHolder) state).getInventory().setContents(items);
                             }
                             // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
                         }
@@ -82,7 +90,7 @@ public class MemoryBlockArea {
         }
     }
 
-    public void applyWorldEdit(World bukkitWorld, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ) {
+    public void applyWorldEdit(World bukkitWorld, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ, ChestProvider provider) {
         for (int y = 0; y < lengthY; y++) {
             for (int x = 0; x < lengthX; x++) {
                 for (int z = 0; z < lengthZ; z++) {
@@ -98,7 +106,14 @@ public class MemoryBlockArea {
                             Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
                             BlockState state = block.getState();
                             if (state instanceof InventoryHolder) {
-                                ((InventoryHolder) state).getInventory().setContents(ProtobufStorage.decodeInventory(storedBlock.getInventory()));
+                                ItemStack[] items = null;
+                                if (provider != null) {
+                                    items = provider.getInventory(((InventoryHolder) state).getInventory().getSize(), x, y, z);
+                                }
+                                if (items == null) {
+                                    items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
+                                }
+                                ((InventoryHolder) state).getInventory().setContents(items);
                             }
                             // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
                         }
