@@ -19,7 +19,7 @@
 
     <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
     <artifactId>bukkit-storage-protobuf</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>storage-protobuf</name>
@@ -46,7 +46,7 @@
         <url>https://github.com/daboross/bukkit-storage-protobuf.git</url>
         <connection>scm:git:https://github.com/daboross/bukkit-storage-protobuf.git</connection>
         <developerConnection>scm:git:git@github.com:daboross/bukkit-storage-protobuf.git</developerConnection>
-        <tag>bukkit-storage-protobuf-0.0.3</tag>
+        <tag>HEAD</tag>
     </scm>
     <properties>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
