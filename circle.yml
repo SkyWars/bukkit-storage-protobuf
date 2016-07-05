@@ -3,5 +3,8 @@ dependencies:
         - protobuf-2.6.1
     pre:
         - sudo apt-get purge protobuf-compiler -y
-        - (if [[ -e protobuf-2.6.1 ]]; then (wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz && tar -xf protobuf-2.6.1.tar.gz && cd protobuf-2.6.1 && ./configure && make)
+        - ([[ -e protobuf-2.6.1 ]] && wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz && tar -xf protobuf-2.6.1.tar.gz && cd protobuf-2.6.1 && ./configure && make)
         - (cd protobuf-2.6.1 && sudo make install)
+test:
+    override:
+        - mvn clean package install test
