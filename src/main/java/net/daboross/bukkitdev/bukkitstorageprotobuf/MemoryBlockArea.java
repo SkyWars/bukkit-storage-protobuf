@@ -23,6 +23,7 @@ import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,7 +32,9 @@ public class MemoryBlockArea {
     public final int lengthX;
     public final int lengthY;
     public final int lengthZ;
-    /** Blocks [y][x][z] */
+    /**
+     * Blocks [y][x][z]
+     */
     public final BlockStorage.Block[][][] blocks;
 
     public MemoryBlockArea(BlockStorage.BlockArea area) throws InvalidBlockAreaException {
@@ -73,12 +76,20 @@ public class MemoryBlockArea {
                         if (storedBlock.hasInventory()) {
                             BlockState state = block.getState();
                             if (state instanceof InventoryHolder) {
+                                Inventory inv = ((InventoryHolder) state).getInventory();
+                                int size = inv.getContents().length;
                                 ItemStack[] items = null;
                                 if (provider != null) {
-                                    items = provider.getInventory(((InventoryHolder) state).getInventory().getSize(), x, y, z);
+                                    items = provider.getInventory(size, x, y, z);
                                 }
                                 if (items == null) {
                                     items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
+                                }
+                                if (items.length > size) {
+                                    ProtobufStatic.debug("Got inventory bigger than determined size. Saved/random produced inventory: %s, proper size: %s", items.length, size);
+                                    ItemStack[] newItems = new ItemStack[size];
+                                    System.arraycopy(items, 0, newItems, 0, size);
+                                    items = newItems;
                                 }
                                 ((InventoryHolder) state).getInventory().setContents(items);
                             }
@@ -106,12 +117,20 @@ public class MemoryBlockArea {
                             Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
                             BlockState state = block.getState();
                             if (state instanceof InventoryHolder) {
+                                Inventory inv = ((InventoryHolder) state).getInventory();
+                                int size = inv.getContents().length;
                                 ItemStack[] items = null;
                                 if (provider != null) {
-                                    items = provider.getInventory(((InventoryHolder) state).getInventory().getSize(), x, y, z);
+                                    items = provider.getInventory(size, x, y, z);
                                 }
                                 if (items == null) {
                                     items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
+                                }
+                                if (items.length > size) {
+                                    ProtobufStatic.debug("Got inventory bigger than determined size. Saved/random produced inventory: %s, proper size: %s", items.length, size);
+                                    ItemStack[] newItems = new ItemStack[size];
+                                    System.arraycopy(items, 0, newItems, 0, size);
+                                    items = newItems;
                                 }
                                 ((InventoryHolder) state).getInventory().setContents(items);
                             }
