@@ -1,3 +1,7 @@
 dependencies:
+    cache_directories:
+        - protobuf-2.6.1
     pre:
-        - sudo apt-get install protobuf-compiler
+        - sudo apt-get purge protobuf-compiler -y
+        - (if [[ -e protobuf-2.6.1 ]]; then (wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz && tar -xf protobuf-2.6.1.tar.gz && cd protobuf-2.6.1 && ./configure && make)
+        - (cd protobuf-2.6.1 && sudo make install)
