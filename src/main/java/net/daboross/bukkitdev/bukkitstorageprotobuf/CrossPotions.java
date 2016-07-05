@@ -90,8 +90,14 @@ public class CrossPotions {
                     storedEffect.getSplash(), storedEffect.getLingering());
         } else {
             if (modernApiSupported) {
-                // Convert old data into new data on load.
-                return new ModernPotionData((byte) storedItem.getData());
+                if (storedItem.getId() == Material.POTION.getId()
+                        || storedItem.getId() == Material.SPLASH_POTION.getId()
+                        || storedItem.getId() == Material.LINGERING_POTION.getId()) {
+                    // Convert old data into new data in prepartion for applying:
+                    return new ModernPotionData((byte) storedItem.getData());
+                } else {
+                    return NO_POTION_DATA;
+                }
             } else if (storedItem.getId() == Material.POTION.getId()) {
                 // Data is stored as old data, and modern data isn't supported.
                 // Just use old/raw data.
