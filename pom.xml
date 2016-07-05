@@ -87,7 +87,7 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-lite</artifactId>
-            <version>2.5.0</version>
+            <version>2.6.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -165,13 +165,13 @@
             <id>dabo.guru</id>
             <name>Release Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://dabo.guru/nexus/content/repositories/releases/</url>
+            <url>https://dabo.guru/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>dabo.guru</id>
             <name>Snapshot Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://dabo.guru/nexus/content/repositories/snapshots/</url>
+            <url>https://dabo.guru/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
