@@ -63,6 +63,7 @@ public class ProtobufStorage {
         return areaBuilder.build();
     }
 
+    @SuppressWarnings("deprecation")
     public static BlockStorage.BlockInventory encodeInventory(ItemStack[] contents) {
         BlockStorage.BlockInventory.Builder inventoryBuilder = BlockStorage.BlockInventory.newBuilder();
         inventoryBuilder.setLength(contents.length);
@@ -107,7 +108,7 @@ public class ProtobufStorage {
                             .setLevel(entry.getValue()));
                 }
             }
-            // Potions
+            // Custom potion data
             if (meta instanceof PotionMeta) {
                 PotionMeta potionMeta = (PotionMeta) meta;
                 if (potionMeta.hasCustomEffects()) {
@@ -121,6 +122,8 @@ public class ProtobufStorage {
                     }
                 }
             }
+            // Catch-all potion transfer
+            CrossPotions.extractData(stack).saveTo(itemBuilder);
             // Leather armor
             if (meta instanceof LeatherArmorMeta) {
                 itemBuilder.setLeatherArmorColorRbg(((LeatherArmorMeta) meta).getColor().asRGB());
@@ -130,6 +133,7 @@ public class ProtobufStorage {
         return inventoryBuilder.build();
     }
 
+    @SuppressWarnings("deprecation")
     public static ItemStack[] decodeInventory(BlockStorage.BlockInventory storedInventory) {
         ItemStack[] result = new ItemStack[storedInventory.getLength()];
 
@@ -144,12 +148,17 @@ public class ProtobufStorage {
             if (storedItem.hasDurability()) {
                 itemStack.setDurability((short) storedItem.getDurability());
             }
+            // This isn't down below because there isn't a boolean condition for this:
+            // This may be needed even if storedItem does not have a main potion effect:
+            // The potion could be stored as raw data and need to be transferred to modern data.
+            CrossPotions.extractData(storedItem).applyTo(itemStack);
+
             boolean hasName = storedItem.hasName();
             boolean hasLore = storedItem.getLoreCount() > 0;
             boolean hasEnchants = storedItem.getEnchantmentCount() > 0;
             boolean hasArmorColor = storedItem.hasLeatherArmorColorRbg();
             boolean hasExtraPotionEffects = storedItem.getExtraPotionEffectsCount() > 0;
-            if (hasName || hasLore || hasEnchants | hasArmorColor | hasExtraPotionEffects) {
+            if (hasName || hasLore || hasEnchants || hasArmorColor || hasExtraPotionEffects) {
                 ItemMeta meta = itemStack.getItemMeta();
                 if (hasName) {
                     meta.setDisplayName(storedItem.getName());

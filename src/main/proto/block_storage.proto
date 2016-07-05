@@ -15,6 +15,14 @@ message ExtraPotionEffect {
     required bool particles = 5;
 }
 
+message MainPotionEffect {
+    required string name = 1;
+    required bool extended = 2;
+    required bool upgraded = 3;
+    required bool splash = 4;
+    required bool lingering = 5;
+}
+
 message InventoryItem {
     required uint32 location = 1; // the location in the inventory
     required uint32 id = 2; // the item id
@@ -24,8 +32,9 @@ message InventoryItem {
     optional string name = 5; // the item name
     repeated string lore = 8; // the item lore
     repeated ItemEnchantment enchantment = 7; // the item's enchantments
-    repeated ExtraPotionEffect extraPotionEffects = 9;
-    optional uint32 leatherArmorColorRbg = 10;
+    optional MainPotionEffect mainPotionEffect = 11; // post-1.9 API stored potion effect
+    repeated ExtraPotionEffect extraPotionEffects = 9; // custom potion effects
+    optional uint32 leatherArmorColorRbg = 10; // Leather armor color in RGB
 }
 
 message BlockInventory {

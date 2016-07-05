@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <version>1.10.2-R0.1-20160702.040419-18</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -134,7 +134,7 @@
             <plugin>
                 <groupId>com.google.protobuf.tools</groupId>
                 <artifactId>maven-protoc-plugin</artifactId>
-                <version>0.3.2</version>
+                <version>0.4.4</version>
                 <configuration>
                     <protocExecutable>protoc</protocExecutable>
                 </configuration>
