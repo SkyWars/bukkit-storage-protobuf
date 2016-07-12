@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public interface ChestProvider {

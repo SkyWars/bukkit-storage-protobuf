@@ -59,6 +59,7 @@ public class MemoryBlockArea {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void apply(World world, int zeroX, int zeroY, int zeroZ, ChestProvider provider) {
         for (int y = 0; y < lengthY; y++) {
             for (int x = 0; x < lengthX; x++) {
@@ -67,31 +68,14 @@ public class MemoryBlockArea {
                     if (storedBlock.getId() != 0) {
                         Block block = world.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
                         if (storedBlock.hasData()) {
-                            //noinspection deprecation
                             block.setTypeIdAndData(storedBlock.getId(), (byte) storedBlock.getData(), false);
                         } else {
-                            //noinspection deprecation
                             block.setTypeId(storedBlock.getId(), false);
                         }
                         if (storedBlock.hasInventory()) {
                             BlockState state = block.getState();
                             if (state instanceof InventoryHolder) {
-                                Inventory inv = ((InventoryHolder) state).getInventory();
-                                int size = inv.getContents().length;
-                                ItemStack[] items = null;
-                                if (provider != null) {
-                                    items = provider.getInventory(size, x, y, z);
-                                }
-                                if (items == null) {
-                                    items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
-                                }
-                                if (items.length > size) {
-                                    ProtobufStatic.debug("Got inventory bigger than determined size. Saved/random produced inventory: %s, proper size: %s", items.length, size);
-                                    ItemStack[] newItems = new ItemStack[size];
-                                    System.arraycopy(items, 0, newItems, 0, size);
-                                    items = newItems;
-                                }
-                                ((InventoryHolder) state).getInventory().setContents(items);
+                                applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
                             }
                             // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
                         }
@@ -117,22 +101,7 @@ public class MemoryBlockArea {
                             Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
                             BlockState state = block.getState();
                             if (state instanceof InventoryHolder) {
-                                Inventory inv = ((InventoryHolder) state).getInventory();
-                                int size = inv.getContents().length;
-                                ItemStack[] items = null;
-                                if (provider != null) {
-                                    items = provider.getInventory(size, x, y, z);
-                                }
-                                if (items == null) {
-                                    items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
-                                }
-                                if (items.length > size) {
-                                    ProtobufStatic.debug("Got inventory bigger than determined size. Saved/random produced inventory: %s, proper size: %s", items.length, size);
-                                    ItemStack[] newItems = new ItemStack[size];
-                                    System.arraycopy(items, 0, newItems, 0, size);
-                                    items = newItems;
-                                }
-                                ((InventoryHolder) state).getInventory().setContents(items);
+                                applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
                             }
                             // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
                         }
@@ -140,6 +109,25 @@ public class MemoryBlockArea {
                 }
             }
         }
+    }
+
+    private void applyInventory(InventoryHolder holder, BlockStorage.Block storedBlock, ChestProvider provider, int x, int y, int z) {
+        Inventory inv = holder.getInventory();
+        int size = inv.getContents().length;
+        ItemStack[] items = null;
+        if (provider != null) {
+            items = provider.getInventory(size, x, y, z);
+        }
+        if (items == null) {
+            items = ProtobufStorage.decodeInventory(storedBlock.getInventory());
+        }
+        if (items.length > size) {
+            ProtobufStatic.debug("Got inventory bigger than determined size. Saved/random produced inventory: %s, proper size: %s", items.length, size);
+            ItemStack[] newItems = new ItemStack[size];
+            System.arraycopy(items, 0, newItems, 0, size);
+            items = newItems;
+        }
+        holder.getInventory().setContents(items);
     }
 
     private class InvalidBlockAreaException extends IOException {

@@ -31,6 +31,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+@SuppressWarnings("deprecation")
 public class ProtobufStorage {
 
     public static BlockStorage.BlockArea encode(World world, int zeroX, int zeroY, int zeroZ, int xLength, int yLength, int zLength, boolean saveBlockInventories) {
@@ -42,7 +43,6 @@ public class ProtobufStorage {
                 for (int z = 0; z < zLength; z++) {
                     Block block = world.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
 
-                    //noinspection deprecation
                     BlockStorage.Block.Builder blockBuilder = BlockStorage.Block.newBuilder()
                             .setId(block.getTypeId())
                             .setData(block.getData());
