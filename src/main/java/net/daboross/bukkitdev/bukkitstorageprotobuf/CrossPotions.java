@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
+import java.util.logging.Level;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -23,16 +24,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
-
-import java.util.logging.Level;
 
 /**
  * Class to manage potions across multiple Minecraft versions.
  */
 public class CrossPotions {
+
     public static final boolean modernApiSupported;
     private static final NoPotionData NO_POTION_DATA = new NoPotionData();
 
@@ -47,7 +46,6 @@ public class CrossPotions {
         modernApiSupported = tempSupported;
     }
 
-
     public static CrossPotionData extractData(ItemStack item) {
         if (modernApiSupported) {
             return getDataModernApi(item);
@@ -55,7 +53,6 @@ public class CrossPotions {
             return getDataRawData(item);
         }
     }
-
 
     private static CrossPotionData getDataModernApi(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
@@ -69,7 +66,7 @@ public class CrossPotions {
     @SuppressWarnings("deprecation")
     private static CrossPotionData getDataRawData(ItemStack item) {
         if (item.getType() == Material.POTION) {
-            return new RawDataPotionData(item.getData().getData());
+            return new RawDataPotionData(item.getDurability());
         } else {
             return NO_POTION_DATA;
         }
@@ -101,7 +98,7 @@ public class CrossPotions {
             } else if (storedItem.getId() == Material.POTION.getId()) {
                 // Data is stored as old data, and modern data isn't supported.
                 // Just use old/raw data.
-                return new RawDataPotionData((byte) storedItem.getData());
+                return new RawDataPotionData((short) storedItem.getDurability());
             } else {
                 return NO_POTION_DATA;
             }
@@ -109,12 +106,14 @@ public class CrossPotions {
     }
 
     public interface CrossPotionData {
+
         void applyTo(ItemStack item);
 
         void saveTo(BlockStorage.InventoryItem.Builder builder);
     }
 
     public static class ModernPotionData implements CrossPotionData {
+
         private final CrossPotionType potionType;
         private final boolean extended;
         private final boolean upgraded;
@@ -123,8 +122,8 @@ public class CrossPotions {
 
         /**
          * Creates a modern potion data storage from the PotionMeta of an existing item. This method could take a plain
-         * ItemStack, but in most cases when it's actually used it is more useful to be checking if meta instanceof PotionMeta
-         * before the ModernPotionData is constructed, so the constructor has this form instead.
+         * ItemStack, but in most cases when it's actually used it is more useful to be checking if meta instanceof
+         * PotionMeta before the ModernPotionData is constructed, so the constructor has this form instead.
          *
          * @param meta The potion metadata to store as modern cross data storage.
          */
@@ -352,11 +351,6 @@ public class CrossPotions {
                     ProtobufStatic.debug("Couldn't find old-data equivalent for new-data potion type! %s", potionType);
                     break;
             }
-            boolean upgraded = (rawData & 32) == 32;
-            boolean extended = (rawData & 64) == 64;
-            // Technically we should check `((rawData & 8192) == 8192)` to detect a non-splash potion, but
-            // since splash is only recorded as a boolean in the new API, we can get away with this.
-            boolean splash = (rawData & 16384) == 16384;
             if (upgraded) {
                 rawData |= 32;
             }
@@ -375,16 +369,13 @@ public class CrossPotions {
                 }
             }
 
-            MaterialData data = item.getData();
-            data.setData((byte) rawData);
-            item.setData(data);
+            item.setDurability((short) rawData);
         }
-
     }
 
     /**
-     * This is an enum that is available on all server versions, which mimics the Bukkit
-     * {@link org.bukkit.potion.PotionType} class.
+     * This is an enum that is available on all server versions, which mimics the Bukkit {@link
+     * org.bukkit.potion.PotionType} class.
      */
     public enum CrossPotionType {
         UNCRAFTABLE(false, false),
@@ -511,9 +502,9 @@ public class CrossPotions {
     @SuppressWarnings("deprecation")
     public static class RawDataPotionData implements CrossPotionData {
 
-        private final byte data;
+        private final short data;
 
-        public RawDataPotionData(byte data) {
+        public RawDataPotionData(short data) {
             // We should only be using this class if modern data isn't supported!
             Validate.isTrue(!modernApiSupported);
             this.data = data;
@@ -521,9 +512,7 @@ public class CrossPotions {
 
         @Override
         public void applyTo(ItemStack item) {
-            MaterialData materialData = item.getData();
-            materialData.setData(data);
-            item.setData(materialData);
+            item.setDurability(data);
         }
 
         @Override
@@ -535,8 +524,7 @@ public class CrossPotions {
     /**
      * Represents an item with no potion data.
      * <p>
-     * This is here for compatibility purposes, so one can do things like:
-     * `CrossPotions.extractData(stack).saveTo(itemBuilder);`
+     * This is here for compatibility purposes, so one can do things like: `CrossPotions.extractData(stack).saveTo(itemBuilder);`
      */
     public static class NoPotionData implements CrossPotionData {
 
