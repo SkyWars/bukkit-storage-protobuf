@@ -21,6 +21,8 @@ import com.sk89q.worldedit.world.AbstractWorld;
 import java.io.IOException;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.operations.MemoryBlockAreaCopyOperation;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.operations.WorldEditMemoryBlockAreaCopyOperation;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -60,27 +62,11 @@ public class MemoryBlockArea {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void apply(World world, int zeroX, int zeroY, int zeroZ, ChestProvider provider) {
         for (int y = 0; y < lengthY; y++) {
             for (int x = 0; x < lengthX; x++) {
                 for (int z = 0; z < lengthZ; z++) {
-                    BlockStorage.Block storedBlock = blocks[y][x][z];
-                    if (storedBlock.getId() != 0) {
-                        Block block = world.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
-                        if (storedBlock.hasData()) {
-                            block.setTypeIdAndData(storedBlock.getId(), (byte) storedBlock.getData(), false);
-                        } else {
-                            block.setTypeId(storedBlock.getId(), false);
-                        }
-                        if (storedBlock.hasInventory()) {
-                            BlockState state = block.getState();
-                            if (state instanceof InventoryHolder) {
-                                applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
-                            }
-                            // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
-                        }
-                    }
+                    copyBlock(world, zeroX, zeroY, zeroZ, provider, x, y, z);
                 }
             }
         }
@@ -90,24 +76,58 @@ public class MemoryBlockArea {
         for (int y = 0; y < lengthY; y++) {
             for (int x = 0; x < lengthX; x++) {
                 for (int z = 0; z < lengthZ; z++) {
-                    BlockStorage.Block storedBlock = blocks[y][x][z];
-                    if (storedBlock.getId() != 0) {
-                        Vector position = new Vector(zeroX + x, zeroY + y, zeroZ + z);
-                        if (storedBlock.hasData()) {
-                            editWorld.setTypeIdAndData(position, storedBlock.getId(), (byte) storedBlock.getData());
-                        } else {
-                            editWorld.setBlockType(position, storedBlock.getId());
-                        }
-                        if (storedBlock.hasInventory()) {
-                            Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
-                            BlockState state = block.getState();
-                            if (state instanceof InventoryHolder) {
-                                applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
-                            }
-                            // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
-                        }
-                    }
+                    copyBlockWorldEdit(bukkitWorld, editWorld, zeroX, zeroY, zeroZ, provider, x, y, z);
                 }
+            }
+        }
+    }
+
+    public MultiPartOperation applyMultiPart(World world, int zeroX, int zeroY, int zeroZ, ChestProvider provider, int operationSize) {
+        return new MemoryBlockAreaCopyOperation(this, operationSize, world, zeroX, zeroY, zeroZ, provider);
+    }
+
+    public MultiPartOperation applyMultiPartWorldEdit(World world, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ, ChestProvider provider, int operationSize) {
+        return new WorldEditMemoryBlockAreaCopyOperation(this, operationSize, world, editWorld, zeroX, zeroY, zeroZ, provider);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void copyBlock(World world, int zeroX, int zeroY, int zeroZ,
+                          ChestProvider provider, int x, int y, int z) {
+        BlockStorage.Block storedBlock = blocks[y][x][z];
+        if (storedBlock.getId() != 0) {
+            Block block = world.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
+            if (storedBlock.hasData()) {
+                block.setTypeIdAndData(storedBlock.getId(), (byte) storedBlock.getData(), false);
+            } else {
+                block.setTypeId(storedBlock.getId(), false);
+            }
+            if (storedBlock.hasInventory()) {
+                BlockState state = block.getState();
+                if (state instanceof InventoryHolder) {
+                    applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
+                }
+                // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
+            }
+        }
+    }
+
+    public void copyBlockWorldEdit(World bukkitWorld, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ,
+                                   ChestProvider provider, int x, int y, int z) {
+        BlockStorage.Block storedBlock = blocks[y][x][z];
+        if (storedBlock.getId() != 0) {
+            Vector position = new Vector(zeroX + x, zeroY + y, zeroZ + z);
+            if (storedBlock.hasData()) {
+                editWorld.setTypeIdAndData(position, storedBlock.getId(), (byte) storedBlock.getData());
+            } else {
+                editWorld.setBlockType(position, storedBlock.getId());
+            }
+            if (storedBlock.hasInventory()) {
+                Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
+                BlockState state = block.getState();
+                if (state instanceof InventoryHolder) {
+                    applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
+                }
+                // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
             }
         }
     }
