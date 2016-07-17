@@ -46,6 +46,9 @@ public class CrossPotions {
         modernApiSupported = tempSupported;
     }
 
+    private CrossPotions() {
+    }
+
     public static CrossPotionData extractData(ItemStack item) {
         if (modernApiSupported) {
             return getDataModernApi(item);

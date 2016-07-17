@@ -34,6 +34,9 @@ import org.bukkit.potion.PotionEffectType;
 @SuppressWarnings("deprecation")
 public class ProtobufStorage {
 
+    private ProtobufStorage() {
+    }
+
     public static BlockStorage.BlockArea encode(World world, int zeroX, int zeroY, int zeroZ, int xLength, int yLength, int zLength, boolean saveBlockInventories) {
         BlockStorage.BlockArea.Builder areaBuilder = BlockStorage.BlockArea.newBuilder();
         for (int y = 0; y < yLength; y++) {

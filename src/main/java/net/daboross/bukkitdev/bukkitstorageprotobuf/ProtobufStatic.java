@@ -18,25 +18,50 @@ package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 
 public class ProtobufStatic {
-    private static Logger debugLogger = null;
 
-    /**
-     * Sets the debug logger to use for debug logging.
-     * <p>
-     * If null, debug logging will be disabled.
-     *
-     * @param debugLogger Logger to debug to, or null.
-     */
-    public static void setDebugLogger(Logger debugLogger) {
-        ProtobufStatic.debugLogger = debugLogger;
+    private static final Logger defaultLogger = Bukkit.getLogger();
+    private static boolean debug = false;
+    private static Logger logger = null;
+
+    private ProtobufStatic() {
     }
 
+    public static void setLogger(Logger logger) {
+        ProtobufStatic.logger = logger == null ? defaultLogger : logger;
+    }
+
+    public static void setDebug(boolean debug) {
+        ProtobufStatic.debug = debug;
+    }
+
+    /**
+     * @param message Message to log (String.format-type formatting)
+     * @param args    arguments to pass to String.format()
+     */
     public static void debug(String message, Object... args) {
-        if (debugLogger != null) {
-            debugLogger.log(Level.INFO, String.format(message, args));
+        if (debug) {
+            logger.log(Level.INFO, String.format(message, args));
         }
     }
 
+    /**
+     * @param level   Level to log at
+     * @param message Message to log (logger.log-type formatting)
+     * @param args    arguments to pass to logger.log()
+     */
+    public static void log(Level level, String message, Object... args) {
+        logger.log(level, message, args);
+    }
+
+    /**
+     * @param level   Level to log at
+     * @param message Message to log (no formatting)
+     * @param ex      throwable to pass to logger.log()
+     */
+    public static void log(Level level, String message, Throwable ex) {
+        logger.log(level, message, ex);
+    }
 }

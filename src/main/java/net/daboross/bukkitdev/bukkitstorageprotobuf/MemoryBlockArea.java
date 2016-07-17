@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.bukkitstorageprotobuf;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.world.AbstractWorld;
 import java.io.IOException;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -127,7 +128,12 @@ public class MemoryBlockArea {
             System.arraycopy(items, 0, newItems, 0, size);
             items = newItems;
         }
-        holder.getInventory().setContents(items);
+        try {
+            holder.getInventory().setContents(items);
+        } catch (IllegalArgumentException ex) {
+            // This is a common error, this will just help me debug
+            ProtobufStatic.log(Level.SEVERE, String.format("Failed to set inventory contents! (perceived size: %d, inventory size: %d)", size, items.length), ex);
+        }
     }
 
     private class InvalidBlockAreaException extends IOException {
