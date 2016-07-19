@@ -94,6 +94,9 @@ public class MemoryBlockAreaCopyOperation implements MultiPartOperation {
     // TODO: Need unit tests on this! Ensuring copyBlock is called once and only once if this is performed totalOperations times.
     @Override
     public void performNextPart() {
+        if (operationsLeft <= 0) {
+            return;
+        }
         int endX = -1;
         int endZ = -1;
         int endY = -1;

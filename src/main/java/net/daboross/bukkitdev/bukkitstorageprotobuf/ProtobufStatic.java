@@ -64,4 +64,8 @@ public class ProtobufStatic {
     public static void log(Level level, String message, Throwable ex) {
         logger.log(level, message, ex);
     }
+
+    public static boolean isDebug() {
+        return debug;
+    }
 }

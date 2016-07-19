@@ -23,11 +23,11 @@ import org.bukkit.World;
 
 public class AreaClearing {
 
-    public MultiPartOperation clearMultiPart(World world, int zeroX, int zeroY, int zeroZ, int lengthX, int lengthY, int lengthZ, int operationSize) {
+    public static MultiPartOperation clearMultiPart(World world, int zeroX, int zeroY, int zeroZ, int lengthX, int lengthY, int lengthZ, int operationSize) {
         return new AreaClearOperation(operationSize, world, zeroX, zeroY, zeroZ, lengthX, lengthY, lengthZ);
     }
 
-    public MultiPartOperation clearMultiPartWorldEdit(World world, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ, int lengthX, int lengthY, int lengthZ, int operationSize) {
+    public static MultiPartOperation clearMultiPartWorldEdit(World world, AbstractWorld editWorld, int zeroX, int zeroY, int zeroZ, int lengthX, int lengthY, int lengthZ, int operationSize) {
         return new WorldEditAreaClearOperation(operationSize, world, editWorld, zeroX, zeroY, zeroZ, lengthX, lengthY, lengthZ);
     }
 }

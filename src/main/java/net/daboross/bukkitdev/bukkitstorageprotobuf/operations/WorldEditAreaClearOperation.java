@@ -17,7 +17,11 @@
 package net.daboross.bukkitdev.bukkitstorageprotobuf.operations;
 
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.world.AbstractWorld;
+import java.util.logging.Level;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStatic;
 import org.bukkit.World;
 
 public class WorldEditAreaClearOperation extends AreaClearOperation {
@@ -32,6 +36,12 @@ public class WorldEditAreaClearOperation extends AreaClearOperation {
     @Override
     protected void clearBlock(final int x, final int y, final int z) {
         // 0 = hardcoded Material.AIR
-        editWorld.setBlockType(new Vector(targetZeroX + x, targetZeroY + y, targetZeroZ + z), 0);
+        try {
+            editWorld.setBlock(new Vector(targetZeroX + x, targetZeroY + y, targetZeroZ + z), new BaseBlock(0), false);
+        } catch (WorldEditException ex) {
+            if (ProtobufStatic.isDebug()) {
+                ProtobufStatic.log(Level.WARNING, "Failed to clear block", ex);
+            }
+        }
     }
 }

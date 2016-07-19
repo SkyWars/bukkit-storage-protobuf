@@ -53,7 +53,7 @@ public class AreaClearOperation implements MultiPartOperation {
     }
 
     protected void clearBlock(final int x, final int y, final int z) {
-        targetWorld.getBlockAt(targetZeroX + x, targetZeroY + y, targetZeroZ + z).setType(Material.AIR);
+        targetWorld.getBlockAt(targetZeroX + x, targetZeroY + y, targetZeroZ + z).setType(Material.AIR, false);
     }
 
     @Override
@@ -63,6 +63,9 @@ public class AreaClearOperation implements MultiPartOperation {
 
     @Override
     public void performNextPart() {
+        if (operationsLeft <= 0) {
+            return;
+        }
         int endX = -1;
         int endZ = -1;
         int endY = -1;
