@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.bukkitstorageprotobuf;
 
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.world.AbstractWorld;
 import java.io.IOException;
@@ -125,7 +124,7 @@ public class MemoryBlockArea {
                 } else {
                     editWorld.setBlock(position, new BaseBlock(storedBlock.getId()), false);
                 }
-            } catch (WorldEditException ex) {
+            } catch (Exception ex) {
                 if (ProtobufStatic.isDebug()) {
                     // this would never log had we used different WE methods (the ones we were using before this was added).
                     ProtobufStatic.log(Level.WARNING, "Failed to set WorldEdit block!", ex);
