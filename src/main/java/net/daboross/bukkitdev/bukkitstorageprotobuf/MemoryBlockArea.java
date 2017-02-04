@@ -27,6 +27,7 @@ import net.daboross.bukkitdev.bukkitstorageprotobuf.operations.WorldEditMemoryBl
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.CommandBlock;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -109,6 +110,14 @@ public class MemoryBlockArea {
                 }
                 // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
             }
+            if (storedBlock.hasCommand()) {
+                BlockState state = block.getState();
+                if (state instanceof CommandBlock) {
+                    BlockStorage.BlockCommandData command = storedBlock.getCommand();
+                    ((CommandBlock) state).setCommand(command.getCommand());
+                    ((CommandBlock) state).setName(command.getName());
+                }
+            }
         }
     }
 
@@ -142,6 +151,15 @@ public class MemoryBlockArea {
                     applyInventory((InventoryHolder) state, storedBlock, provider, x, y, z);
                 }
                 // TODO: Should we print a warning here if there's a stored inventory on a non-inventory-holder block?
+            }
+            if (storedBlock.hasCommand()) {
+                Block block = bukkitWorld.getBlockAt(zeroX + x, zeroY + y, zeroZ + z);
+                BlockState state = block.getState();
+                if (state instanceof CommandBlock) {
+                    BlockStorage.BlockCommandData command = storedBlock.getCommand();
+                    ((CommandBlock) state).setCommand(command.getCommand());
+                    ((CommandBlock) state).setName(command.getName());
+                }
             }
         }
     }

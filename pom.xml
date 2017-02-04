@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.10.2-R0.1-20160702.040419-18</version>
+            <version>1.11.2-R0.1-20170204.010328-49</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

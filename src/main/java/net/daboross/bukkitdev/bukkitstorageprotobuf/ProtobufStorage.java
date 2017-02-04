@@ -22,6 +22,7 @@ import org.bukkit.Color;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.CommandBlock;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -55,6 +56,16 @@ public class ProtobufStorage {
                         if (state instanceof InventoryHolder) {
                             ItemStack[] contents = ((InventoryHolder) state).getInventory().getContents();
                             blockBuilder.setInventory(encodeInventory(contents));
+                        }
+                        if (state instanceof CommandBlock) {
+                            BlockStorage.BlockCommandData.Builder commandBuilder = BlockStorage.BlockCommandData.newBuilder();
+                            String command = ((CommandBlock) state).getCommand();
+                            commandBuilder.setCommand(command);
+                            String name = ((CommandBlock) state).getName();
+                            if (name != null) {
+                                commandBuilder.setName(name);
+                            }
+                            blockBuilder.setCommand(commandBuilder);
                         }
                     }
                     rowBuilder.addBlock(blockBuilder);

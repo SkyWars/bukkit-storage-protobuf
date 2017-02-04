@@ -42,10 +42,16 @@ message BlockInventory {
     required uint32 length = 2; // the total length of the inventory
 }
 
+message BlockCommandData {
+    required string command = 1;
+    optional string name = 2;
+}
+
 message Block {
     required uint32 id = 1; // the block id
     optional uint32 data = 2; // the block data
     optional BlockInventory inventory = 3; // the inventory in this block, only for chests, dispensers, or other blocks with an inventory.
+    optional BlockCommandData command = 4; // the command stored in a command block
 }
 
 message BlockRow {
