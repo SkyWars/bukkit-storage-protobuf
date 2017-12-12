@@ -17,8 +17,11 @@
 package net.daboross.bukkitdev.bukkitstorageprotobuf.operations;
 
 import net.daboross.bukkitdev.bukkitstorageprotobuf.MultiPartOperation;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 public class AreaClearOperation implements MultiPartOperation {
 
@@ -34,6 +37,7 @@ public class AreaClearOperation implements MultiPartOperation {
     private int nextOperationStartX;
     private int nextOperationStartY;
     private int nextOperationStartZ;
+    private boolean newSetTypeSupported;
 
     public AreaClearOperation(int operationSize, World targetWorld, int targetZeroX, int targetZeroY, int targetZeroZ,
                               final int lengthX, final int lengthY, final int lengthZ) {
@@ -50,10 +54,20 @@ public class AreaClearOperation implements MultiPartOperation {
         this.nextOperationStartX = 0;
         this.nextOperationStartY = 0;
         this.nextOperationStartZ = 0;
+        try {
+            this.newSetTypeSupported = Block.class.getMethod("setType", Material.class, boolean.class) != null;
+        } catch (NoSuchMethodException e) {
+            this.newSetTypeSupported = false;
+        }
     }
 
     protected void clearBlock(final int x, final int y, final int z) {
-        targetWorld.getBlockAt(targetZeroX + x, targetZeroY + y, targetZeroZ + z).setType(Material.AIR, false);
+        if (this.newSetTypeSupported) {
+            targetWorld.getBlockAt(targetZeroX + x, targetZeroY + y, targetZeroZ + z).setType(Material.AIR, false);
+        } else {
+            // this will only be called on 1.7 servers
+            targetWorld.getBlockAt(targetZeroX + x, targetZeroY + y, targetZeroZ + z).setTypeId(0, false);
+        }
     }
 
     @Override

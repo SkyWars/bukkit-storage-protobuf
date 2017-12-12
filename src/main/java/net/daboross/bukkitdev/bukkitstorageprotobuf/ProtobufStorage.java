@@ -187,10 +187,16 @@ public class ProtobufStorage {
                 }
                 if (hasExtraPotionEffects && meta instanceof PotionMeta) {
                     for (BlockStorage.ExtraPotionEffect effect : storedItem.getExtraPotionEffectsList()) {
-                        ((PotionMeta) meta).addCustomEffect(new PotionEffect(PotionEffectType.getById(effect.getId()),
-                                        effect.getDuration(), effect.getAmplifier(),
-                                        effect.getAmbient(), effect.getParticles()),
-                                true);
+                        try {
+                            ((PotionMeta) meta).addCustomEffect(new PotionEffect(PotionEffectType.getById(effect.getId()),
+                                            effect.getDuration(), effect.getAmplifier(),
+                                            effect.getAmbient(), effect.getParticles()),
+                                    true);
+                        } catch (NoSuchMethodError ignored) {
+                            ((PotionMeta) meta).addCustomEffect(new PotionEffect(PotionEffectType.getById(effect.getId()),
+                                            effect.getDuration(), effect.getAmplifier()),
+                                    true);
+                        }
                     }
                 }
                 if (hasArmorColor && meta instanceof LeatherArmorMeta) {
